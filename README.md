@@ -1,6 +1,6 @@
 # 🎬 Cineva
 
-A movie discovery and showtime booking demo built with **React**, **Node.js**, **Express**, and **MongoDB**. Seat reservations and demo bookings are persisted; payments and authentication are not implemented.
+A movie discovery and showtime booking demo built with **React**, **Node.js**, **Express**, and **MongoDB**. Users can register, sign in, reserve seats, and view their bookings. Payments are not implemented.
 
 ![Cineva movie discovery app](https://via.placeholder.com/1200x400?text=Cineva)
 
@@ -162,8 +162,16 @@ POST /api/showtimes                    # Add new showtime
 
 ### Bookings
 ```
-POST /api/bookings                     # Atomically reserve seats and create a demo booking
-GET  /api/bookings/:bookingReference   # Retrieve booking confirmation details
+POST /api/bookings                     # [Bearer token] Atomically reserve seats and create a demo booking
+GET  /api/bookings/my                  # [Bearer token] List the current user's bookings
+GET  /api/bookings/:bookingReference   # [Bearer token] Retrieve an owned booking
+```
+
+### Authentication
+```
+POST /api/auth/register                # Create account and return a JWT
+POST /api/auth/login                   # Sign in and return a JWT
+GET  /api/auth/me                      # [Bearer token] Return the current user
 ```
 
 Create a booking with only the showtime ID and selected seat IDs; the server calculates prices from the showtime document:
@@ -172,9 +180,11 @@ Create a booking with only the showtime ID and selected seat IDs; the server cal
 ```
 Seat IDs cover rows A–J, 15 seats per row. Rows A–H use `priceStandard`; rows I–J use `premiumPrice`. A booking may contain up to eight unique seats. A stale seat selection returns `409 Conflict`; malformed requests return `400`. The server reserves seats atomically before writing a booking and releases them if booking persistence fails.
 
-Bookings are local demo records only. There is no user identity, payment, cancellation, or booking-history feature. Booking endpoints are unprotected, like the existing demonstration/admin POST endpoints, and must not be exposed publicly.
+New bookings require authentication and are associated with the account that created them. Booking history and reference lookup only return records owned by that account. Older demo bookings without a user owner remain in the database but are not visible through these account-scoped APIs. Bookings are local demo records only; payment and cancellation are not implemented.
 
-All POST routes are currently unprotected. Authentication is not implemented, so these demonstration/admin endpoints must not be exposed publicly.
+Movie, theater, and showtime creation POST routes remain unprotected. No admin authentication is implemented; do not expose these endpoints publicly.
+
+Include `JWT_SECRET` in the backend environment, using a long random secret. The demo frontend stores its JWT in `localStorage`; production session handling should consider HttpOnly, Secure, SameSite cookies.
 
 ### Health
 ```
@@ -234,6 +244,7 @@ GET  /api/health              # Check server status
 ```javascript
 {
   bookingReference: String, // Unique CV-<year>-<random hex> reference
+  userId: ObjectId,          // Reference to User; optional for legacy demo records
   showtimeId: ObjectId,
   movieId: ObjectId,
   theaterId: ObjectId,
@@ -241,6 +252,16 @@ GET  /api/health              # Check server status
   seatBreakdown: [{ category, seatNumbers, unitPrice, subtotal }],
   amount: Number,
   status: String,          // confirmed (demo booking)
+  createdAt: Date
+}
+```
+
+### User Model
+```javascript
+{
+  name: String,
+  email: String,             // Unique, lowercase, trimmed
+  passwordHash: String,      // bcrypt hash; never returned by the API
   createdAt: Date
 }
 ```
@@ -255,6 +276,8 @@ GET  /api/health              # Check server status
 - **ShowtimeSelection** - Date selector and showtime cards by theater
 - **SeatSelection** - Interactive 150-seat layout and live booking summary
 - **BookingConfirmation** - Persisted booking details by booking reference
+- **Login / Register** - Account sign in and creation
+- **MyBookings / BookingDetail** - Owner-scoped booking history and details
 
 ### Components
 - **Navigation** - Header with logo and links
@@ -308,8 +331,8 @@ REACT_APP_API_URL=http://localhost:5000/api
 - **mongoose** - MongoDB ODM
 - **cors** - Cross-origin support
 - **dotenv** - Environment variables
-- **bcryptjs** - Password hashing (for future auth)
-- **jsonwebtoken** - JWT tokens (for future auth)
+- **bcryptjs** - Password hashing for account registration and login
+- **jsonwebtoken** - JWT creation and verification for authenticated API requests
 
 ### Frontend
 - **react** - UI library
@@ -337,21 +360,20 @@ REACT_APP_API_URL=http://localhost:5000/api
 ## 🔐 Security Considerations
 
 Currently this is a demo application. For production:
-- ✅ Add user authentication (JWT)
-- ✅ Hash passwords with bcryptjs
+- ✅ User authentication (JWT) and bcryptjs password hashing are implemented for the demo
 - ✅ Validate all inputs on backend
 - ✅ Use HTTPS only
 - ✅ Implement rate limiting
-- ✅ Add authentication middleware
+- ✅ Authentication middleware protects account and booking endpoints; movie/theater/showtime admin POST routes are still unprotected
 - ✅ Encrypt sensitive data
 
 ---
 
 ## 🔄 Future Enhancements
 
-- [ ] **User Authentication** - Sign up, login, user profiles
+- [x] **User Authentication** - Sign up and login
 - [x] **Seat Selection** - Visual seat map with selection
-- [ ] **Booking History** - View past and upcoming bookings
+- [x] **Booking History** - View own bookings and details
 - [ ] **Payment Integration** - Razorpay/Stripe
 - [ ] **Admin Dashboard** - Manage movies, theaters, showtimes
 - [ ] **Reviews & Ratings** - User movie ratings
@@ -364,12 +386,12 @@ Currently this is a demo application. For production:
 
 ## 🐛 Known Issues & Limitations
 
-- Bookings are local demo records; payment, authentication, cancellation, and booking history are not implemented
+- Bookings are local demo records; payment and cancellation are not implemented
 - Poster images use TMDb image URLs (plus one local Pathaan poster asset) and fall back to a local Cineva graphic if an image cannot load
 - No payment processing (UI only)
-- No user authentication
+- The demo stores JWTs in browser `localStorage`; production should consider HttpOnly, Secure, SameSite cookies
 - No email notifications
-- All POST endpoints are currently unprotected; do not expose them publicly.
+- Movie, theater, and showtime creation endpoints remain unprotected; do not expose them publicly.
 
 ---
 
