@@ -76,7 +76,7 @@ function ShowtimeSelection() {
   };
 
   const availableSeats = (showtime) => {
-    return showtime.totalSeats - (showtime.bookedSeats ? showtime.bookedSeats.length : 0);
+    return Math.max(150 - (showtime.bookedSeats ? showtime.bookedSeats.length : 0), 0);
   };
 
   if (movieLoading) return <main className="showtime-page-loading container"><div className="detail-loading-card" aria-label="Loading showtimes" /></main>;

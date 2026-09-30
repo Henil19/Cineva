@@ -24,4 +24,9 @@ export const showtimeService = {
   addShowtime: (showtimeData) => api.post('/showtimes', showtimeData),
 };
 
+export const bookingService = {
+  createBooking: (bookingData) => api.post('/bookings', bookingData),
+  getBookingByReference: (bookingReference) => api.get(`/bookings/${bookingReference}`),
+};
+
 export default api;

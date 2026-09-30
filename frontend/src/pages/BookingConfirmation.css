@@ -1,0 +1,20 @@
+.confirmation-page { min-height: calc(100vh - 76px); padding-block: 4rem 5rem; background: var(--color-canvas); }
+.confirmation-container { max-width: 720px; }
+.confirmation-card { padding: clamp(1.5rem, 6vw, 3.2rem); border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-card); text-align: center; }
+.confirmation-success-mark { display: grid; width: 58px; height: 58px; place-items: center; margin: 0 auto 1.25rem; border: 1px solid #bddbcc; border-radius: 50%; color: #23724b; background: #e8f6ee; font-size: 1.6rem; font-weight: 800; }
+.confirmation-card .section-kicker { margin-bottom: .45rem; }
+.confirmation-card h1 { margin: 0; font-size: clamp(1.85rem, 5vw, 2.6rem); letter-spacing: -.055em; }
+.confirmation-subtitle { margin: .6rem 0 1.7rem; color: var(--color-muted); }
+.confirmation-reference { display: grid; gap: .35rem; padding: 1rem; border: 1px dashed #dadce4; border-radius: var(--radius-sm); background: #fafafd; }
+.confirmation-reference span { color: var(--color-muted); font-size: .67rem; font-weight: 800; letter-spacing: .13em; }
+.confirmation-reference strong { color: var(--color-ink); font-size: 1.25rem; letter-spacing: .055em; }
+.confirmation-details { display: grid; gap: .9rem; margin-top: 1.35rem; text-align: left; }
+.confirmation-details > div { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: .75rem; border-bottom: 1px solid var(--color-line); }
+.confirmation-details span { color: var(--color-muted); font-size: .8rem; }
+.confirmation-details strong { color: var(--color-ink); font-size: .86rem; text-align: right; }
+.confirmation-details .confirmation-total { align-items: center; padding-top: .25rem; border-bottom: 0; }
+.confirmation-details .confirmation-total span { color: var(--color-ink); font-size: .95rem; font-weight: 750; }
+.confirmation-details .confirmation-total strong { font-size: 1.35rem; }
+.confirmation-demo-note { margin: 1.3rem 0 1.2rem; padding: .8rem; border-radius: var(--radius-sm); color: #644d1d; background: #fff8e8; font-size: .8rem; }
+.confirmation-home-link { min-width: 190px; }
+@media (max-width: 480px) { .confirmation-details > div { align-items: start; flex-direction: column; gap: .25rem; } .confirmation-details strong { text-align: left; } }
