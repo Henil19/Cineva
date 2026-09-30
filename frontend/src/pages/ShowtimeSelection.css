@@ -1,0 +1,218 @@
+.showtime-selection-page {
+  padding: 40px 0;
+}
+
+.showtime-selection-page h1 {
+  color: white;
+  font-size: 36px;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Date Selector */
+.date-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+  overflow-x: auto;
+  padding: 10px 0;
+  scroll-behavior: smooth;
+}
+
+.date-btn {
+  min-width: 80px;
+  padding: 12px;
+  background: white;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 12px;
+  text-align: center;
+}
+
+.date-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.date-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: white;
+}
+
+.date-day {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.date-date {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.date-month {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Showtimes Section */
+.showtimes-section {
+  min-height: 400px;
+}
+
+.theaters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.theater-group {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.theater-header {
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.theater-header h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.theater-address {
+  color: #666;
+  font-size: 14px;
+}
+
+.shows-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.showtime-card {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.showtime-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+}
+
+.show-time {
+  margin-bottom: 10px;
+}
+
+.time-display {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+.show-details {
+  margin-bottom: 10px;
+}
+
+.show-details p {
+  margin: 3px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.language {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.format {
+  color: #764ba2;
+}
+
+.show-pricing {
+  margin-bottom: 15px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff6b6b;
+  margin: 5px 0;
+}
+
+.available {
+  font-size: 12px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.book-show-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.book-show-btn:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.book-show-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ccc;
+}
+
+.no-shows,
+.loading {
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  padding: 40px;
+}
+
+.error {
+  background: #ff6b6b;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .showtime-selection-page h1 {
+    font-size: 24px;
+  }
+
+  .shows-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .date-selector {
+    gap: 8px;
+  }
+}
