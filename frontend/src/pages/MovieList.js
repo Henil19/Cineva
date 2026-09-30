@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { movieService } from '../services/api';
+import MoviePoster from '../components/MoviePoster';
 import './MovieList.css';
 
 function MovieList() {
@@ -58,11 +59,7 @@ function MovieList() {
                 className="movie-card-link"
               >
                 <div className="movie-card">
-                  <img
-                    src={movie.posterUrl}
-                    alt={movie.title}
-                    className="movie-poster"
-                  />
+                  <MoviePoster src={movie.posterUrl} title={movie.title} className="movie-poster" />
                   <div className="movie-info">
                     <h3>{movie.title}</h3>
                     <p className="genre">{movie.genre.join(', ')}</p>
