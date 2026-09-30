@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { movieService } from '../services/api';
+import MoviePoster from '../components/MoviePoster';
 import './MovieDetail.css';
 
 function MovieDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchMovieDetails();
-  }, [id]);
-
-  const fetchMovieDetails = async () => {
+  const fetchMovieDetails = useCallback(async () => {
     try {
       setLoading(true);
       const response = await movieService.getMovieById(id);
@@ -25,7 +21,11 @@ function MovieDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchMovieDetails();
+  }, [fetchMovieDetails]);
 
   if (loading) return <div className="container"><p>Loading...</p></div>;
   if (error) return <div className="container"><p className="error">{error}</p></div>;
@@ -38,7 +38,7 @@ function MovieDetail() {
       <div className="container">
         <div className="movie-detail-container">
           <div className="movie-poster-section">
-            <img src={movie.posterUrl} alt={movie.title} className="detail-poster" />
+            <MoviePoster src={movie.posterUrl} title={movie.title} className="detail-poster" loading="eager" />
           </div>
 
           <div className="movie-details-section">
@@ -80,12 +80,12 @@ function MovieDetail() {
               </div>
             )}
 
-            <button
+            <Link
               className="book-button"
-              onClick={() => navigate(`/showtimes/${id}`)}
+              to={`/showtimes/${id}`}
             >
               Book Tickets Now
-            </button>
+            </Link>
           </div>
         </div>
       </div>
