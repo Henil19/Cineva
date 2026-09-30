@@ -1,0 +1,127 @@
+.movie-detail-page {
+  padding: 40px 0;
+}
+
+.movie-detail-container {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 40px;
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.movie-poster-section {
+  display: flex;
+  justify-content: center;
+}
+
+.detail-poster {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.movie-details-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-details-section h1 {
+  font-size: 42px;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.detail-info {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 16px;
+}
+
+.info-item .label {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 120px;
+}
+
+.info-item span {
+  color: #555;
+}
+
+.rating {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.description-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.description-section h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.description-section p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.book-button {
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: fit-content;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.book-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.book-button:active {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .movie-detail-container {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .movie-details-section h1 {
+    font-size: 28px;
+  }
+
+  .detail-poster {
+    max-width: 250px;
+  }
+
+  .info-item .label {
+    min-width: auto;
+  }
+}
