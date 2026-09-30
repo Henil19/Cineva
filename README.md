@@ -1,6 +1,6 @@
 # 🎬 Cineva
 
-A movie discovery and showtime browsing application built with **React**, **Node.js**, and **MongoDB**. Seat selection, bookings, payments, and authentication are not implemented.
+A movie discovery and showtime booking demo built with **React**, **Node.js**, **Express**, and **MongoDB**. Seat reservations and demo bookings are persisted; payments and authentication are not implemented.
 
 ![Cineva movie discovery app](https://via.placeholder.com/1200x400?text=Cineva)
 
@@ -14,7 +14,8 @@ A movie discovery and showtime browsing application built with **React**, **Node
 - 📺 **Movie Details** - View comprehensive movie information
 - 🏢 **Theater Selection** - Choose theaters and showtimes
 - 📅 **Date Selection** - Browse showtimes for different dates
-- 💺 **Seat Availability** - Displays seat counts stored with each showtime
+- 💺 **Interactive Seat Selection** - Select up to eight available seats from a 150-seat cinema layout
+- 🎟️ **Demo Bookings** - Persist seat reservations and show a human-readable booking reference
 - 📱 **Responsive Design** - Works perfectly on mobile and desktop
 
 ### 🎨 UI/UX Features
@@ -159,6 +160,20 @@ GET  /api/showtimes/id/:showtimeId    # Get one populated showtime
 POST /api/showtimes                    # Add new showtime
 ```
 
+### Bookings
+```
+POST /api/bookings                     # Atomically reserve seats and create a demo booking
+GET  /api/bookings/:bookingReference   # Retrieve booking confirmation details
+```
+
+Create a booking with only the showtime ID and selected seat IDs; the server calculates prices from the showtime document:
+```json
+{ "showtimeId": "<showtime ObjectId>", "seatNumbers": ["A4", "I7"] }
+```
+Seat IDs cover rows A–J, 15 seats per row. Rows A–H use `priceStandard`; rows I–J use `premiumPrice`. A booking may contain up to eight unique seats. A stale seat selection returns `409 Conflict`; malformed requests return `400`. The server reserves seats atomically before writing a booking and releases them if booking persistence fails.
+
+Bookings are local demo records only. There is no user identity, payment, cancellation, or booking-history feature. Booking endpoints are unprotected, like the existing demonstration/admin POST endpoints, and must not be exposed publicly.
+
 All POST routes are currently unprotected. Authentication is not implemented, so these demonstration/admin endpoints must not be exposed publicly.
 
 ### Health
@@ -215,6 +230,21 @@ GET  /api/health              # Check server status
 }
 ```
 
+### Booking Model
+```javascript
+{
+  bookingReference: String, // Unique CV-<year>-<random hex> reference
+  showtimeId: ObjectId,
+  movieId: ObjectId,
+  theaterId: ObjectId,
+  seatNumbers: [String],
+  seatBreakdown: [{ category, seatNumbers, unitPrice, subtotal }],
+  amount: Number,
+  status: String,          // confirmed (demo booking)
+  createdAt: Date
+}
+```
+
 ---
 
 ## 🎨 UI Components
@@ -223,6 +253,8 @@ GET  /api/health              # Check server status
 - **MovieList** - Grid of all available movies with search
 - **MovieDetail** - Full movie information and booking button
 - **ShowtimeSelection** - Date selector and showtime cards by theater
+- **SeatSelection** - Interactive 150-seat layout and live booking summary
+- **BookingConfirmation** - Persisted booking details by booking reference
 
 ### Components
 - **Navigation** - Header with logo and links
@@ -318,7 +350,7 @@ Currently this is a demo application. For production:
 ## 🔄 Future Enhancements
 
 - [ ] **User Authentication** - Sign up, login, user profiles
-- [ ] **Seat Selection** - Visual seat map with selection
+- [x] **Seat Selection** - Visual seat map with selection
 - [ ] **Booking History** - View past and upcoming bookings
 - [ ] **Payment Integration** - Razorpay/Stripe
 - [ ] **Admin Dashboard** - Manage movies, theaters, showtimes
@@ -332,11 +364,10 @@ Currently this is a demo application. For production:
 
 ## 🐛 Known Issues & Limitations
 
-- Seat selection is a placeholder page; no booking is created
+- Bookings are local demo records; payment, authentication, cancellation, and booking history are not implemented
 - Poster images use TMDb image URLs (plus one local Pathaan poster asset) and fall back to a local Cineva graphic if an image cannot load
 - No payment processing (UI only)
 - No user authentication
-- No booking persistence
 - No email notifications
 - All POST endpoints are currently unprotected; do not expose them publicly.
 

@@ -150,7 +150,7 @@ const seedDatabase = async () => {
         time: '16:00',
         priceStandard: 280,
         premiumPrice: 380,
-        totalSeats: 120,
+        totalSeats: 150,
         bookedSeats: [],
       },
       {
@@ -170,7 +170,7 @@ const seedDatabase = async () => {
         time: '14:00',
         priceStandard: 250,
         premiumPrice: 350,
-        totalSeats: 100,
+        totalSeats: 150,
         bookedSeats: [],
       },
       {
@@ -180,7 +180,7 @@ const seedDatabase = async () => {
         time: '19:00',
         priceStandard: 300,
         premiumPrice: 400,
-        totalSeats: 120,
+        totalSeats: 150,
         bookedSeats: [],
       },
 
@@ -202,7 +202,7 @@ const seedDatabase = async () => {
         time: '15:00',
         priceStandard: 280,
         premiumPrice: 380,
-        totalSeats: 120,
+        totalSeats: 150,
         bookedSeats: [],
       },
       {
@@ -212,7 +212,7 @@ const seedDatabase = async () => {
         time: '18:00',
         priceStandard: 250,
         premiumPrice: 350,
-        totalSeats: 100,
+        totalSeats: 150,
         bookedSeats: [],
       },
       {
@@ -222,7 +222,7 @@ const seedDatabase = async () => {
         time: '20:00',
         priceStandard: 200,
         premiumPrice: 300,
-        totalSeats: 80,
+        totalSeats: 150,
         bookedSeats: [],
       },
       {
