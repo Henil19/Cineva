@@ -1,8 +1,8 @@
-# 🎬 BookMyShow Clone
+# 🎬 Cineva
 
-A complete, production-ready movie ticket booking application built with **React**, **Node.js**, and **MongoDB**.
+A movie discovery and showtime browsing application built with **React**, **Node.js**, and **MongoDB**. Seat selection, bookings, payments, and authentication are not implemented.
 
-![BookMyShow Clone](https://via.placeholder.com/1200x400?text=BookMyShow+Clone)
+![Cineva movie discovery app](https://via.placeholder.com/1200x400?text=Cineva)
 
 ---
 
@@ -14,7 +14,7 @@ A complete, production-ready movie ticket booking application built with **React
 - 📺 **Movie Details** - View comprehensive movie information
 - 🏢 **Theater Selection** - Choose theaters and showtimes
 - 📅 **Date Selection** - Browse showtimes for different dates
-- 💺 **Seat Availability** - Real-time seat availability tracking
+- 💺 **Seat Availability** - Displays seat counts stored with each showtime
 - 📱 **Responsive Design** - Works perfectly on mobile and desktop
 
 ### 🎨 UI/UX Features
@@ -95,7 +95,7 @@ http://localhost:3000
 ## 📂 Project Structure
 
 ```
-bookmyshow-clone/
+Cineva/
 ├── backend/
 │   ├── models/
 │   │   ├── Movie.js          # Movie schema
@@ -153,10 +153,13 @@ POST /api/theaters            # Add new theater
 
 ### Showtimes
 ```
-GET  /api/showtimes?movieId=X&date=Y  # Get showtimes with filters
-GET  /api/showtimes/:movieId/:date    # Get showtimes for movie on date
+GET  /api/showtimes?movieId=X&date=Y  # date is YYYY-MM-DD, matched as a UTC day range
+GET  /api/showtimes/:movieId/:date    # Get showtimes for movie on calendar day
+GET  /api/showtimes/id/:showtimeId    # Get one populated showtime
 POST /api/showtimes                    # Add new showtime
 ```
+
+All POST routes are currently unprotected. Authentication is not implemented, so these demonstration/admin endpoints must not be exposed publicly.
 
 ### Health
 ```
@@ -329,12 +332,13 @@ Currently this is a demo application. For production:
 
 ## 🐛 Known Issues & Limitations
 
-- Seat selection UI not yet implemented
+- Seat selection is a placeholder page; no booking is created
+- Poster images use TMDb image URLs (plus one local Pathaan poster asset) and fall back to a local Cineva graphic if an image cannot load
 - No payment processing (UI only)
 - No user authentication
 - No booking persistence
 - No email notifications
-- Admin features not protected
+- All POST endpoints are currently unprotected; do not expose them publicly.
 
 ---
 
