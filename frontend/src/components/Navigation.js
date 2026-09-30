@@ -7,7 +7,7 @@ function Navigation() {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-brand">
-          🎬 BookMyShow
+          🎬 Cineva
         </Link>
         <ul className="nav-menu">
           <li className="nav-item">
@@ -16,9 +16,9 @@ function Navigation() {
             </Link>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <Link to="/about" className="nav-link">
               About
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
