@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { randomBytes } = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -21,6 +22,16 @@ mongoose.connect(mongoURL, {
 const Movie = require('./models/Movie');
 const Theater = require('./models/Theater');
 const Showtime = require('./models/Showtime');
+const Booking = require('./models/Booking');
+
+const SEAT_PATTERN = /^[A-J](?:[1-9]|1[0-5])$/;
+const MAX_BOOKING_SEATS = 8;
+
+const createBookingReference = () => {
+  const year = new Date().getUTCFullYear();
+  const suffix = randomBytes(4).toString('hex').toUpperCase();
+  return `CV-${year}-${suffix}`;
+};
 
 // Calendar dates are interpreted as UTC day boundaries, independent of server timezone.
 const calendarDayRange = (value) => {
@@ -62,7 +73,7 @@ app.get('/api/theaters', async (req, res) => {
   }
 });
 
-// Retrieve a showtime for the seat-selection placeholder page.
+// Retrieve a populated showtime for seat selection.
 app.get('/api/showtimes/id/:showtimeId', async (req, res) => {
   try {
     const showtime = await Showtime.findById(req.params.showtimeId)
@@ -163,9 +174,140 @@ app.post('/api/showtimes', async (req, res) => {
   }
 });
 
+// Create a demo booking. Prices are always calculated from the stored showtime.
+app.post('/api/bookings', async (req, res) => {
+  const body = req.body;
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return res.status(400).json({ error: 'Request body must be a JSON object.' });
+  }
+
+  const { showtimeId, seatNumbers } = body;
+  if (typeof showtimeId !== 'string' || !/^[a-f\d]{24}$/i.test(showtimeId)) {
+    return res.status(400).json({ error: 'A valid showtimeId is required.' });
+  }
+  if (!Array.isArray(seatNumbers) || seatNumbers.length === 0) {
+    return res.status(400).json({ error: 'Choose at least one seat.' });
+  }
+  if (seatNumbers.length > MAX_BOOKING_SEATS) {
+    return res.status(400).json({ error: `You can book up to ${MAX_BOOKING_SEATS} seats at a time.` });
+  }
+  if (!seatNumbers.every((seat) => typeof seat === 'string' && SEAT_PATTERN.test(seat))) {
+    return res.status(400).json({ error: 'One or more seat numbers are invalid.' });
+  }
+  if (new Set(seatNumbers).size !== seatNumbers.length) {
+    return res.status(400).json({ error: 'Duplicate seat numbers are not allowed.' });
+  }
+
+  try {
+    if (!(await Showtime.exists({ _id: showtimeId }))) {
+      return res.status(404).json({ error: 'Showtime not found.' });
+    }
+
+    const showtime = await Showtime.findOneAndUpdate(
+      { _id: showtimeId, bookedSeats: { $nin: seatNumbers } },
+      { $addToSet: { bookedSeats: { $each: seatNumbers } } },
+      { new: true, runValidators: true },
+    );
+
+    if (!showtime) {
+      return res.status(409).json({ error: 'One or more selected seats are no longer available.' });
+    }
+
+    const standardSeats = seatNumbers.filter((seat) => seat[0] <= 'H');
+    const premiumSeats = seatNumbers.filter((seat) => seat[0] >= 'I');
+    const seatBreakdown = [
+      standardSeats.length > 0 && {
+        category: 'standard',
+        seatNumbers: standardSeats,
+        unitPrice: showtime.priceStandard,
+        subtotal: standardSeats.length * showtime.priceStandard,
+      },
+      premiumSeats.length > 0 && {
+        category: 'premium',
+        seatNumbers: premiumSeats,
+        unitPrice: showtime.premiumPrice,
+        subtotal: premiumSeats.length * showtime.premiumPrice,
+      },
+    ].filter(Boolean);
+    const amount = seatBreakdown.reduce((total, category) => total + category.subtotal, 0);
+    let seatsReserved = true;
+    let booking;
+
+    try {
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          booking = await Booking.create({
+            bookingReference: createBookingReference(),
+            showtimeId: showtime._id,
+            movieId: showtime.movieId,
+            theaterId: showtime.theaterId,
+            seatNumbers,
+            seatBreakdown,
+            amount,
+          });
+          break;
+        } catch (error) {
+          if (error.code === 11000 && error.keyPattern?.bookingReference && attempt < 2) continue;
+          throw error;
+        }
+      }
+
+      if (!booking) throw new Error('Booking could not be created.');
+      const populatedBooking = await Booking.findById(booking._id)
+        .populate('movieId')
+        .populate('theaterId')
+        .populate('showtimeId');
+      if (!populatedBooking) throw new Error('Booking could not be loaded after creation.');
+      seatsReserved = false;
+      return res.status(201).json(populatedBooking);
+    } catch (error) {
+      if (booking?._id) {
+        const rollbackBooking = await Booking.deleteOne({ _id: booking._id }).catch((rollbackError) => {
+          console.error('Could not remove incomplete booking:', rollbackError);
+          return null;
+        });
+        if (!rollbackBooking) console.error('The incomplete booking cleanup must be checked manually.');
+      }
+      if (seatsReserved) {
+        await Showtime.updateOne(
+          { _id: showtime._id },
+          { $pull: { bookedSeats: { $in: seatNumbers } } },
+        ).catch((rollbackError) => console.error('Could not release seats after booking failure:', rollbackError));
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error('Booking creation failed:', error);
+    return res.status(500).json({ error: 'Booking could not be completed. Please try again.' });
+  }
+});
+
+// Retrieve a booking by its non-sequential, user-facing reference.
+app.get('/api/bookings/:bookingReference', async (req, res) => {
+  try {
+    const booking = await Booking.findOne({ bookingReference: req.params.bookingReference })
+      .populate('movieId')
+      .populate('theaterId')
+      .populate('showtimeId');
+    if (!booking) return res.status(404).json({ error: 'Booking not found.' });
+    return res.json(booking);
+  } catch (error) {
+    console.error('Booking lookup failed:', error);
+    return res.status(500).json({ error: 'Booking details could not be loaded.' });
+  }
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running' });
+});
+
+app.use((error, req, res, next) => {
+  if (error.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'Request body must be valid JSON.' });
+  }
+  console.error('Unhandled request error:', error);
+  return res.status(500).json({ error: 'An unexpected server error occurred.' });
 });
 
 // Start Server
