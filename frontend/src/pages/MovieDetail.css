@@ -84,6 +84,7 @@
 }
 
 .book-button {
+  display: inline-block;
   padding: 15px 40px;
   font-size: 18px;
   font-weight: 600;
@@ -94,6 +95,7 @@
   cursor: pointer;
   transition: all 0.3s;
   width: fit-content;
+  text-decoration: none;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
