@@ -1,7 +1,7 @@
 {
-  "name": "bookmyshow-backend",
+  "name": "cineva-backend",
   "version": "1.0.0",
-  "description": "BookMyShow Clone Backend",
+  "description": "Cineva movie discovery API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
