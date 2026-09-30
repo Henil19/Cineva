@@ -19,6 +19,7 @@ export const theaterService = {
 
 export const showtimeService = {
   getShowtimes: (movieId, date) => api.get(`/showtimes/${movieId}/${date}`),
+  getShowtimeById: (id) => api.get(`/showtimes/id/${id}`),
   getShowtimesByQuery: (params) => api.get('/showtimes', { params }),
   addShowtime: (showtimeData) => api.post('/showtimes', showtimeData),
 };
