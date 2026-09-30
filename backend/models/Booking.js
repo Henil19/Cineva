@@ -22,6 +22,11 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Theater',
     required: true,
   },
+  // Optional for backward compatibility with demo bookings created before auth.
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   seatNumbers: {
     type: [String],
     required: true,

@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { randomBytes } = require('crypto');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -23,6 +25,8 @@ const Movie = require('./models/Movie');
 const Theater = require('./models/Theater');
 const Showtime = require('./models/Showtime');
 const Booking = require('./models/Booking');
+const User = require('./models/User');
+const authenticateUser = require('./middleware/auth');
 
 const SEAT_PATTERN = /^[A-J](?:[1-9]|1[0-5])$/;
 const MAX_BOOKING_SEATS = 8;
@@ -33,6 +37,20 @@ const createBookingReference = () => {
   return `CV-${year}-${suffix}`;
 };
 
+const publicUser = (user) => ({
+  id: user._id.toString(),
+  name: user.name,
+  email: user.email,
+});
+
+const createAuthToken = (user) => jwt.sign(
+  { sub: user._id.toString() },
+  process.env.JWT_SECRET,
+  { expiresIn: '7d', issuer: 'cineva-api' },
+);
+
+const isObjectBody = (body) => body && typeof body === 'object' && !Array.isArray(body);
+
 // Calendar dates are interpreted as UTC day boundaries, independent of server timezone.
 const calendarDayRange = (value) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
@@ -42,6 +60,65 @@ const calendarDayRange = (value) => {
 };
 
 // ==================== ROUTES ====================
+
+// Authentication
+app.post('/api/auth/register', async (req, res) => {
+  if (!isObjectBody(req.body)) return res.status(400).json({ error: 'Request body must be a JSON object.' });
+  const { name, email, password } = req.body;
+  const normalizedName = typeof name === 'string' ? name.trim() : '';
+  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+
+  if (!normalizedName || normalizedName.length > 100) {
+    return res.status(400).json({ error: 'Name is required and must be 100 characters or fewer.' });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return res.status(400).json({ error: 'Enter a valid email address.' });
+  }
+  if (typeof password !== 'string' || password.length < 8 || Buffer.byteLength(password, 'utf8') > 72) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters and no more than 72 bytes.' });
+  }
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ error: 'Authentication is not configured.' });
+  }
+
+  try {
+    const passwordHash = await bcrypt.hash(password, 12);
+    const user = await User.create({ name: normalizedName, email: normalizedEmail, passwordHash });
+    return res.status(201).json({ token: createAuthToken(user), user: publicUser(user) });
+  } catch (error) {
+    if (error.code === 11000) return res.status(409).json({ error: 'An account with this email already exists.' });
+    if (error.name === 'ValidationError') return res.status(400).json({ error: 'The registration details are invalid.' });
+    console.error('Registration failed:', error);
+    return res.status(500).json({ error: 'Registration could not be completed.' });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  if (!isObjectBody(req.body)) return res.status(400).json({ error: 'Request body must be a JSON object.' });
+  const { email, password } = req.body;
+  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || typeof password !== 'string' || !password) {
+    return res.status(400).json({ error: 'Enter a valid email address and password.' });
+  }
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ error: 'Authentication is not configured.' });
+  }
+
+  try {
+    const user = await User.findOne({ email: normalizedEmail }).select('+passwordHash');
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      return res.status(401).json({ error: 'Email or password is incorrect.' });
+    }
+    return res.json({ token: createAuthToken(user), user: publicUser(user) });
+  } catch (error) {
+    console.error('Login failed:', error);
+    return res.status(500).json({ error: 'Login could not be completed.' });
+  }
+});
+
+app.get('/api/auth/me', authenticateUser, (req, res) => {
+  res.json({ user: publicUser(req.user) });
+});
 
 // GET all movies
 app.get('/api/movies', async (req, res) => {
@@ -174,8 +251,23 @@ app.post('/api/showtimes', async (req, res) => {
   }
 });
 
-// Create a demo booking. Prices are always calculated from the stored showtime.
-app.post('/api/bookings', async (req, res) => {
+// Booking history is always scoped to the authenticated owner.
+app.get('/api/bookings/my', authenticateUser, async (req, res) => {
+  try {
+    const bookings = await Booking.find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate('movieId')
+      .populate('theaterId')
+      .populate('showtimeId');
+    return res.json(bookings);
+  } catch (error) {
+    console.error('Booking history lookup failed:', error);
+    return res.status(500).json({ error: 'Booking history could not be loaded.' });
+  }
+});
+
+// Create a booking for the authenticated user. Prices are calculated from the showtime.
+app.post('/api/bookings', authenticateUser, async (req, res) => {
   const body = req.body;
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
     return res.status(400).json({ error: 'Request body must be a JSON object.' });
@@ -241,6 +333,7 @@ app.post('/api/bookings', async (req, res) => {
             showtimeId: showtime._id,
             movieId: showtime.movieId,
             theaterId: showtime.theaterId,
+            userId: req.user._id,
             seatNumbers,
             seatBreakdown,
             amount,
@@ -282,10 +375,13 @@ app.post('/api/bookings', async (req, res) => {
   }
 });
 
-// Retrieve a booking by its non-sequential, user-facing reference.
-app.get('/api/bookings/:bookingReference', async (req, res) => {
+// Retrieve a booking only when its reference belongs to the authenticated user.
+app.get('/api/bookings/:bookingReference', authenticateUser, async (req, res) => {
   try {
-    const booking = await Booking.findOne({ bookingReference: req.params.bookingReference })
+    const booking = await Booking.findOne({
+      bookingReference: req.params.bookingReference,
+      userId: req.user._id,
+    })
       .populate('movieId')
       .populate('theaterId')
       .populate('showtimeId');
