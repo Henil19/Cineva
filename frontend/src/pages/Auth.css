@@ -1,0 +1,22 @@
+.auth-page { display: grid; min-height: calc(100vh - 76px); place-items: center; padding: 3rem 18px 4.5rem; background: radial-gradient(ellipse at 50% 0%, rgba(240,68,82,.08), transparent 44%), var(--color-canvas); }
+.auth-panel { width: min(100%, 460px); padding: clamp(1.5rem, 5vw, 2.5rem); border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-card); }
+.auth-brand { display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 2rem; color: var(--color-ink); font-size: 1.1rem; font-weight: 850; letter-spacing: -.05em; text-decoration: none; }
+.auth-brand .brand-mark { width: 30px; height: 30px; }
+.auth-panel > .section-kicker { margin-bottom: .4rem; }
+.auth-panel h1 { margin: 0; font-size: clamp(1.75rem, 5vw, 2.15rem); letter-spacing: -.055em; }
+.auth-intro { margin: .5rem 0 1.5rem; color: var(--color-muted); font-size: .9rem; line-height: 1.5; }
+.auth-form { display: grid; gap: 1rem; }
+.auth-field { display: grid; gap: .45rem; color: var(--color-ink-soft); font-size: .82rem; font-weight: 700; }
+.auth-input { width: 100%; min-height: 47px; padding: .65rem .8rem; border: 1px solid #dfe0e6; border-radius: var(--radius-sm); color: var(--color-ink); background: #fff; font-size: .92rem; }
+.auth-input:focus { border-color: #f18a94; outline: 3px solid rgba(240,68,82,.12); }
+.auth-field small { color: var(--color-muted); font-size: .72rem; font-weight: 450; }
+.auth-submit { width: 100%; margin-top: .25rem; }
+.auth-switch { margin: 1.4rem 0 0; color: var(--color-muted); font-size: .83rem; text-align: center; }
+.auth-switch a { color: var(--color-accent-dark); font-weight: 750; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+.auth-error,
+.auth-context-message { margin: 0 0 1rem; padding: .75rem .85rem; border-radius: var(--radius-sm); font-size: .8rem; line-height: 1.5; }
+.auth-error { color: #9f2632; background: #fff0f1; }
+.auth-context-message { color: #644d1d; background: #fff8e8; }
+.auth-submit:disabled { cursor: wait; opacity: .8; }
+@media (max-width: 480px) { .auth-page { align-items: start; } .auth-panel { margin-top: 1rem; } }

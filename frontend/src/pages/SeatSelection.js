@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { bookingService, showtimeService } from '../services/api';
 import SeatLayout from '../components/SeatLayout';
+import { useAuth } from '../context/AuthContext';
 import './SeatSelection.css';
 
 const MAX_SEATS = 8;
@@ -13,8 +14,12 @@ const calendarDate = (value) => new Intl.DateTimeFormat(undefined, {
 function SeatSelection() {
   const { showtimeId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, logout, loading: authLoading } = useAuth();
   const [showtime, setShowtime] = useState(null);
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState(() => (
+    Array.isArray(location.state?.selectedSeats) ? location.state.selectedSeats.slice(0, MAX_SEATS) : []
+  ));
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [loadError, setLoadError] = useState('');
@@ -60,14 +65,31 @@ function SeatSelection() {
   };
 
   const confirmBooking = async () => {
-    if (selectedSeats.length === 0 || booking) return;
+    if (selectedSeats.length === 0 || booking || authLoading) return;
+    if (!user) {
+      navigate('/login', {
+        state: {
+          from: { pathname: location.pathname, state: { selectedSeats } },
+          message: 'Sign in to confirm your seats. Your selection will be saved while you sign in.',
+        },
+      });
+      return;
+    }
     setBooking(true);
     setBookingError('');
     try {
       const response = await bookingService.createBooking({ showtimeId, seatNumbers: selectedSeats });
       navigate(`/booking/confirmation/${encodeURIComponent(response.data.bookingReference)}`);
     } catch (error) {
-      if (error.response?.status === 409) {
+      if (error.response?.status === 401) {
+        logout();
+        navigate('/login', {
+          state: {
+            from: { pathname: location.pathname, state: { selectedSeats } },
+            message: 'Your session ended. Sign in to finish booking; your seat selection is saved.',
+          },
+        });
+      } else if (error.response?.status === 409) {
         setBookingError('One or more seats were just booked by someone else. We refreshed availability; please choose again.');
         await loadShowtime();
       } else if (error.response?.status === 400) {
@@ -117,8 +139,8 @@ function SeatSelection() {
             <div className="summary-total"><span>Total <small>({selectedSeats.length} {selectedSeats.length === 1 ? 'seat' : 'seats'} · no extra fees)</small></span><strong>₹{subtotal.toLocaleString('en-IN')}</strong></div>
             {selectionNotice && <p className="selection-notice" role="status">{selectionNotice}</p>}
             {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
-            <button className="button-primary confirm-booking-button" type="button" onClick={confirmBooking} disabled={selectedSeats.length === 0 || booking}>
-              {booking ? 'Confirming…' : 'Confirm booking'} <span aria-hidden="true">→</span>
+            <button className="button-primary confirm-booking-button" type="button" onClick={confirmBooking} disabled={selectedSeats.length === 0 || booking || authLoading}>
+              {booking ? 'Confirming…' : authLoading ? 'Checking account…' : user ? 'Confirm booking' : 'Sign in to confirm'} <span aria-hidden="true">→</span>
             </button>
             <p className="demo-booking-note">Local demo booking only. No payment is collected.</p>
           </aside>
