@@ -7,6 +7,13 @@ const Showtime = require('./models/Showtime');
 
 const mongoURL = process.env.MONGO_URI || 'mongodb://localhost:27017/bookmyshow';
 
+// Seed using locally displayed calendar days, stored at UTC midnight for timezone-safe day queries.
+const seedCalendarDate = (offsetDays) => {
+  const day = new Date();
+  day.setDate(day.getDate() + offsetDays);
+  return new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()));
+};
+
 const seedDatabase = async () => {
   try {
     // Connect to MongoDB
@@ -30,7 +37,7 @@ const seedDatabase = async () => {
         duration: 180,
         language: ['English', 'Hindi'],
         releaseDate: new Date('2023-09-21'),
-        posterUrl: 'https://via.placeholder.com/300x450?text=Oppenheimer',
+        posterUrl: 'https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg',
         description: 'A biographical film about J. Robert Oppenheimer and his role in the development of the atomic bomb.',
         rating: 8.5,
       },
@@ -40,7 +47,7 @@ const seedDatabase = async () => {
         duration: 114,
         language: ['English', 'Hindi'],
         releaseDate: new Date('2023-07-21'),
-        posterUrl: 'https://via.placeholder.com/300x450?text=Barbie',
+        posterUrl: 'https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg',
         description: 'Barbie and Ken are having the time of their lives in the colorful and seemingly perfect world of Barbie Land.',
         rating: 7.2,
       },
@@ -50,7 +57,7 @@ const seedDatabase = async () => {
         duration: 169,
         language: ['Hindi', 'Tamil', 'Telugu'],
         releaseDate: new Date('2023-09-07'),
-        posterUrl: 'https://via.placeholder.com/300x450?text=Jawan',
+        posterUrl: 'https://image.tmdb.org/t/p/w500/jFt1gS4BGHlK8xt76Y81Alp4dbt.jpg',
         description: 'An ex-soldier leads a special forces team on a dangerous mission to stop a sinister terrorist plot.',
         rating: 7.0,
       },
@@ -60,7 +67,7 @@ const seedDatabase = async () => {
         duration: 146,
         language: ['Hindi', 'Tamil', 'Telugu'],
         releaseDate: new Date('2023-01-25'),
-        posterUrl: 'https://via.placeholder.com/300x450?text=Pathaan',
+        posterUrl: '/posters/pathaan.svg',
         description: 'An Indian spy goes on a daring mission across the globe to stop a deadly terrorist attack.',
         rating: 7.1,
       },
@@ -70,7 +77,7 @@ const seedDatabase = async () => {
         duration: 206,
         language: ['English', 'Hindi'],
         releaseDate: new Date('2023-10-20'),
-        posterUrl: 'https://via.placeholder.com/300x450?text=Killers',
+        posterUrl: 'https://image.tmdb.org/t/p/w500/dB6Krk806zeqd0YNp2ngQ9zXteH.jpg',
         description: 'An investigation into the serial murders of wealthy Osage Native Americans in 1920s Oklahoma.',
         rating: 8.1,
       },
@@ -111,9 +118,8 @@ const seedDatabase = async () => {
     console.log('🏢 Added 4 theaters');
 
     // Create Showtimes
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const today = seedCalendarDate(0);
+    const tomorrow = seedCalendarDate(1);
 
     const showtimes = await Showtime.insertMany([
       // Today's shows
@@ -219,8 +225,18 @@ const seedDatabase = async () => {
         totalSeats: 80,
         bookedSeats: [],
       },
+      {
+        movieId: movies[4]._id,
+        theaterId: theaters[0]._id,
+        date: today,
+        time: '17:30',
+        priceStandard: 300,
+        premiumPrice: 450,
+        totalSeats: 150,
+        bookedSeats: [],
+      },
     ]);
-    console.log('🎪 Added 10 showtimes');
+    console.log(`🎪 Added ${showtimes.length} showtimes`);
 
     console.log('\n✨ Database seeded successfully!');
     console.log(`📊 Total: ${movies.length} movies, ${theaters.length} theaters, ${showtimes.length} showtimes`);
