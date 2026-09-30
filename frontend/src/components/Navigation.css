@@ -66,7 +66,7 @@
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -91,6 +91,15 @@
   color: white;
   background: rgba(255, 255, 255, 0.1);
 }
+
+.nav-link.nav-signup { border: 1px solid rgba(255,255,255,.24); color: white; }
+.nav-link.nav-signup:hover { border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.1); }
+.nav-link.nav-logout { border: 0; background: transparent; cursor: pointer; }
+.nav-link.nav-logout:hover { background: rgba(255,255,255,.1); }
+.nav-user { display: grid; max-width: 160px; gap: 2px; padding: 0 10px; color: white; }
+.nav-user-name { overflow: hidden; font-size: .8rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.nav-user-email { overflow: hidden; color: rgba(255,255,255,.56); font-size: .63rem; text-overflow: ellipsis; white-space: nowrap; }
+.nav-auth-loading { padding-inline: 10px; color: rgba(255,255,255,.6); font-size: .72rem; }
 
 .nav-link.is-active::after {
   position: absolute;
@@ -153,4 +162,7 @@
   .nav-menu.is-open { display: flex; flex-direction: column; }
   .nav-link { min-height: 48px; border-radius: 12px; }
   .nav-link.is-active::after { right: auto; bottom: 10px; left: 0; width: 3px; height: 28px; }
+  .nav-user { max-width: none; padding: .65rem .9rem; }
+  .nav-user-email { font-size: .68rem; }
+  .nav-auth-loading { padding: .85rem .9rem; }
 }
