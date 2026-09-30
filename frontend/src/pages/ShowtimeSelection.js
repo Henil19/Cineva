@@ -1,29 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { showtimeService, movieService } from '../services/api';
 import { format, addDays } from 'date-fns';
 import './ShowtimeSelection.css';
 
 function ShowtimeSelection() {
   const { movieId } = useParams();
-  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showtimes, setShowtimes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [dates, setDates] = useState([]);
+  const [dates] = useState(() => Array.from({ length: 7 }, (_, index) => addDays(new Date(), index)));
 
-  useEffect(() => {
-    fetchMovie();
-    generateDates();
-  }, []);
-
-  useEffect(() => {
-    fetchShowtimes();
-  }, [selectedDate]);
-
-  const fetchMovie = async () => {
+  const fetchMovie = useCallback(async () => {
     try {
       const response = await movieService.getMovieById(movieId);
       setMovie(response.data);
@@ -31,17 +21,9 @@ function ShowtimeSelection() {
       setError('Failed to load movie');
       console.error(err);
     }
-  };
+  }, [movieId]);
 
-  const generateDates = () => {
-    const dateArray = [];
-    for (let i = 0; i < 7; i++) {
-      dateArray.push(addDays(new Date(), i));
-    }
-    setDates(dateArray);
-  };
-
-  const fetchShowtimes = async () => {
+  const fetchShowtimes = useCallback(async () => {
     try {
       setLoading(true);
       const dateString = format(selectedDate, 'yyyy-MM-dd');
@@ -57,7 +39,15 @@ function ShowtimeSelection() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [movieId, selectedDate]);
+
+  useEffect(() => {
+    fetchMovie();
+  }, [fetchMovie]);
+
+  useEffect(() => {
+    fetchShowtimes();
+  }, [fetchShowtimes]);
 
   const isDateSelected = (date) => {
     return format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
@@ -141,15 +131,16 @@ function ShowtimeSelection() {
                           </p>
                         </div>
 
-                        <button
+                        <Link
                           className="book-show-btn"
-                          disabled={availableSeats(show) === 0}
-                          onClick={() => {
-                            alert('Seat selection coming soon!\nSelected: ' + show.time + ' at ' + group.theater.name);
+                          to={`/booking/${show._id}`}
+                          aria-disabled={availableSeats(show) === 0}
+                          onClick={(event) => {
+                            if (availableSeats(show) === 0) event.preventDefault();
                           }}
                         >
                           {availableSeats(show) === 0 ? 'Housefull' : 'Book'}
-                        </button>
+                        </Link>
                       </div>
                     ))}
                   </div>
