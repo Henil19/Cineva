@@ -59,7 +59,10 @@ function BookingConfirmation() {
             <div className="confirmation-total"><span>Total</span><strong>₹{Number(booking.amount).toLocaleString('en-IN')}</strong></div>
           </div>
           <p className="confirmation-demo-note">This is a local demo booking. No payment was processed.</p>
-          <Link className="button-primary confirmation-home-link" to="/">Back to movies <span aria-hidden="true">→</span></Link>
+          <div className="confirmation-actions">
+            <Link className="button-primary confirmation-home-link" to="/bookings">My bookings <span aria-hidden="true">→</span></Link>
+            <Link className="confirmation-movies-link" to="/">Back to movies</Link>
+          </div>
         </section>
       </div>
     </main>

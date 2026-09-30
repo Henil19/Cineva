@@ -1,0 +1,23 @@
+.my-bookings-page { min-height: calc(100vh - 76px); padding-block: 3.7rem 5rem; background: var(--color-canvas); }
+.my-bookings-container { max-width: 1040px; }
+.my-bookings-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem; }
+.my-bookings-heading h1 { margin: 0; font-size: clamp(2.1rem, 5vw, 3rem); letter-spacing: -.06em; }
+.my-bookings-heading p { margin: .45rem 0 0; color: var(--color-muted); }
+.my-bookings-heading .button-secondary { flex: 0 0 auto; }
+.my-bookings-list { display: grid; gap: 1rem; }
+.booking-list-card { position: relative; display: grid; gap: 1.2rem; padding: 1.35rem 1.5rem; border: 1px solid var(--color-line); border-radius: var(--radius-md); color: inherit; background: var(--color-surface); box-shadow: 0 7px 22px rgba(22,25,39,.035); text-decoration: none; transition: transform 160ms var(--ease-out), border-color 160ms ease, box-shadow 160ms ease; }
+.booking-list-card:hover { transform: translateY(-2px); border-color: #f2adb3; box-shadow: var(--shadow-soft); }
+.booking-list-top,.booking-list-main { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.booking-list-top > div { display: grid; gap: .25rem; }
+.booking-ref-label { color: var(--color-muted); font-size: .63rem; font-weight: 800; letter-spacing: .13em; }
+.booking-ref { color: var(--color-ink-soft); font-size: .88rem; letter-spacing: .04em; }
+.booking-status { padding: .38rem .65rem; border-radius: 999px; color: #28744d; background: #e8f6ee; font-size: .68rem; font-weight: 800; text-transform: capitalize; }
+.booking-list-main h2 { margin: 0; font-size: 1.18rem; letter-spacing: -.035em; }
+.booking-list-main p { margin: .3rem 0 0; color: var(--color-muted); font-size: .8rem; }
+.booking-list-total { font-size: 1.15rem; white-space: nowrap; }
+.booking-list-meta { display: flex; flex-wrap: wrap; gap: .55rem 1.3rem; padding-top: .9rem; border-top: 1px solid var(--color-line); color: var(--color-muted); font-size: .74rem; }
+.booking-card-arrow { position: absolute; right: 1.45rem; bottom: 1.15rem; color: var(--color-accent); font-size: 1.1rem; }
+.my-bookings-empty { min-height: 300px; }
+.empty-ticket-icon { display: block; margin-bottom: .8rem; color: var(--color-accent); font-size: 1.5rem; }
+.my-bookings-empty .button-primary { margin-top: 1.15rem; }
+@media (max-width: 600px) { .my-bookings-page { padding-block: 2.5rem 4rem; } .my-bookings-heading { align-items: start; flex-direction: column; } .booking-list-card { padding: 1.15rem; } .booking-list-meta { padding-right: 1.5rem; } .booking-card-arrow { right: 1rem; bottom: .95rem; } }

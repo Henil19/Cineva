@@ -16,5 +16,8 @@
 .confirmation-details .confirmation-total span { color: var(--color-ink); font-size: .95rem; font-weight: 750; }
 .confirmation-details .confirmation-total strong { font-size: 1.35rem; }
 .confirmation-demo-note { margin: 1.3rem 0 1.2rem; padding: .8rem; border-radius: var(--radius-sm); color: #644d1d; background: #fff8e8; font-size: .8rem; }
+.confirmation-actions { display: grid; justify-items: center; gap: .9rem; }
 .confirmation-home-link { min-width: 190px; }
+.confirmation-movies-link { color: var(--color-muted); font-size: .82rem; font-weight: 650; text-decoration: none; }
+.confirmation-movies-link:hover { color: var(--color-accent-dark); }
 @media (max-width: 480px) { .confirmation-details > div { align-items: start; flex-direction: column; gap: .25rem; } .confirmation-details strong { text-align: left; } }
