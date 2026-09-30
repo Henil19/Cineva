@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450" role="img" aria-label="Movie poster unavailable">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#667eea"/><stop offset="1" stop-color="#764ba2"/></linearGradient></defs>
+  <rect width="300" height="450" fill="url(#bg)"/>
+  <path d="M106 155h88v105h-88z" fill="none" stroke="#fff" stroke-width="8" rx="8"/>
+  <path d="m140 180 35 27-35 27z" fill="#fff"/>
+  <text x="150" y="310" fill="#fff" font-family="Arial,sans-serif" font-size="20" text-anchor="middle">Poster unavailable</text>
+</svg>
