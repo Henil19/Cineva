@@ -29,6 +29,8 @@
   transition: all 0.3s;
   font-size: 12px;
   text-align: center;
+  color: #333;
+  flex: 0 0 auto;
 }
 
 .date-btn:hover {
@@ -36,10 +38,16 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+.showtime-selection-page .date-btn:not(.active) {
+  background: #fff;
+  color: #333;
+}
+
 .date-btn.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-color: white;
+  color: white;
 }
 
 .date-day {
@@ -164,6 +172,7 @@
 }
 
 .book-show-btn {
+  display: block;
   width: 100%;
   padding: 10px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -174,14 +183,15 @@
   font-size: 14px;
   font-weight: 600;
   transition: all 0.3s;
+  text-decoration: none;
 }
 
-.book-show-btn:hover:not(:disabled) {
+.book-show-btn:hover:not([aria-disabled="true"]) {
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-.book-show-btn:disabled {
+.book-show-btn[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
   background: #ccc;
@@ -214,5 +224,8 @@
 
   .date-selector {
     gap: 8px;
+    padding: 10px 2px 14px;
+    margin-bottom: 28px;
+    -webkit-overflow-scrolling: touch;
   }
 }
