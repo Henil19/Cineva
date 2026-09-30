@@ -1,4 +1,4 @@
-# BookMyShow Clone - Complete Setup Guide
+# Cineva - Complete Setup Guide
 
 A full-stack movie booking application built with **React**, **Node.js**, and **MongoDB**.
 
@@ -55,7 +55,7 @@ Before you begin, ensure you have installed:
 
 ### Step 1: Clone/Download the Project
 ```bash
-cd bookmyshow-clone
+cd Cineva
 ```
 
 ### Step 2: Backend Setup
@@ -141,7 +141,7 @@ curl -X POST http://localhost:5000/api/movies \
     "duration": 180,
     "language": ["English", "Hindi"],
     "releaseDate": "2023-09-21T00:00:00Z",
-    "posterUrl": "https://via.placeholder.com/300x450?text=Oppenheimer",
+    "posterUrl": "https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg",
     "description": "A biographical film about J. Robert Oppenheimer and his role in the development of the atomic bomb.",
     "rating": 8.5
   }'
@@ -156,7 +156,7 @@ curl -X POST http://localhost:5000/api/movies \
     "duration": 114,
     "language": ["English", "Hindi"],
     "releaseDate": "2023-07-21T00:00:00Z",
-    "posterUrl": "https://via.placeholder.com/300x450?text=Barbie",
+    "posterUrl": "https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
     "description": "Barbie and Ken are having the time of their lives in the colorful and seemingly perfect world of Barbie Land.",
     "rating": 7.2
   }'
@@ -191,7 +191,7 @@ curl -X POST http://localhost:5000/api/theaters \
 
 1. Open **MongoDB Compass**
 2. Connect to `mongodb://localhost:27017`
-3. Create database: `bookmyshow`
+3. Create database: `bookmyshow` (the default legacy MongoDB database name; change `MONGO_URI` to use another name)
 4. Create collections: `movies`, `theaters`, `showtimes`
 5. Insert documents manually
 
@@ -203,6 +203,8 @@ curl -X POST http://localhost:5000/api/theaters \
 - `/` - Home page with all movies
 - `/movie/:id` - Movie detail page
 - `/showtimes/:movieId` - Showtime selection page
+- `/about` - About Cineva and its technology stack
+- `/booking/:showtimeId` - Seat-selection placeholder; no booking is created
 
 ### Backend API Endpoints
 
@@ -218,7 +220,10 @@ curl -X POST http://localhost:5000/api/theaters \
 **Showtimes:**
 - `GET /api/showtimes` - Get showtimes (query params: movieId, date)
 - `GET /api/showtimes/:movieId/:date` - Get showtimes for movie on specific date
-- `POST /api/showtimes` - Add new showtime (admin)
+- `GET /api/showtimes/id/:showtimeId` - Get one populated showtime
+- `POST /api/showtimes` - Add new showtime (admin; currently unprotected)
+
+All POST routes for movies, theaters, and showtimes are currently unprotected. Authentication is not implemented; do not expose these routes publicly.
 
 **Health Check:**
 - `GET /api/health` - Server status
@@ -228,7 +233,7 @@ curl -X POST http://localhost:5000/api/theaters \
 ## 🔧 Project Structure
 
 ```
-bookmyshow-clone/
+Cineva/
 ├── backend/
 │   ├── models/
 │   │   ├── Movie.js
@@ -371,6 +376,6 @@ This project is open source and available under the MIT License.
 
 ## 🎉 You're All Set!
 
-Your BookMyShow clone is now ready to use. Start exploring, customizing, and building amazing features!
+Your Cineva application is ready to use. Start exploring, customizing, and building amazing features!
 
 Happy Coding! 🚀
