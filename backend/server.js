@@ -22,6 +22,14 @@ const Movie = require('./models/Movie');
 const Theater = require('./models/Theater');
 const Showtime = require('./models/Showtime');
 
+// Calendar dates are interpreted as UTC day boundaries, independent of server timezone.
+const calendarDayRange = (value) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
+  const start = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(start.getTime()) || start.toISOString().slice(0, 10) !== value) return null;
+  return { $gte: start, $lt: new Date(start.getTime() + 24 * 60 * 60 * 1000) };
+};
+
 // ==================== ROUTES ====================
 
 // GET all movies
@@ -54,13 +62,27 @@ app.get('/api/theaters', async (req, res) => {
   }
 });
 
+// Retrieve a showtime for the seat-selection placeholder page.
+app.get('/api/showtimes/id/:showtimeId', async (req, res) => {
+  try {
+    const showtime = await Showtime.findById(req.params.showtimeId)
+      .populate('theaterId').populate('movieId');
+    if (!showtime) return res.status(404).json({ error: 'Showtime not found' });
+    res.json(showtime);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET showtimes for a specific movie and date
 app.get('/api/showtimes/:movieId/:date', async (req, res) => {
   try {
     const { movieId, date } = req.params;
+    const dateRange = calendarDayRange(date);
+    if (!dateRange) return res.status(400).json({ error: 'date must be a valid YYYY-MM-DD calendar date' });
     const showtimes = await Showtime.find({
       movieId,
-      date: new Date(date),
+      date: dateRange,
     }).populate('theaterId').populate('movieId');
     res.json(showtimes);
   } catch (error) {
@@ -74,7 +96,11 @@ app.get('/api/showtimes', async (req, res) => {
     const { movieId, date } = req.query;
     let query = {};
     if (movieId) query.movieId = movieId;
-    if (date) query.date = new Date(date);
+    if (date) {
+      const dateRange = calendarDayRange(date);
+      if (!dateRange) return res.status(400).json({ error: 'date must be a valid YYYY-MM-DD calendar date' });
+      query.date = dateRange;
+    }
     
     const showtimes = await Showtime.find(query)
       .populate('theaterId')
@@ -85,6 +111,7 @@ app.get('/api/showtimes', async (req, res) => {
   }
 });
 
+// ADMIN ROUTES ARE CURRENTLY UNPROTECTED. Do not expose these endpoints publicly without authentication.
 // POST add a new movie (Admin)
 app.post('/api/movies', async (req, res) => {
   try {
