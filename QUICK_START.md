@@ -1,4 +1,4 @@
-# 🚀 BookMyShow Clone - Quick Start
+# 🚀 Cineva - Quick Start
 
 Get your app running in **5 minutes**!
 
@@ -52,7 +52,7 @@ node seed.js
 🗑️ Cleared existing data
 🎬 Added 5 movies
 🏢 Added 4 theaters
-🎪 Added 10 showtimes
+🎪 Added 11 showtimes
 ✨ Database seeded successfully!
 ```
 
@@ -77,7 +77,7 @@ npm start
 webpack compiled successfully
 Compiled successfully!
 
-You can now view bookmyshow-frontend in the browser.
+You can now view cineva-frontend in the browser.
 
   Local:            http://localhost:3000
   On Your Network:  http://192.x.x.x:3000
@@ -97,14 +97,14 @@ Click or go to: **http://localhost:3000**
 ✅ **Search** - Use the search bar to find specific movies  
 ✅ **View Details** - Click on a movie card to see full details  
 ✅ **Select Showtimes** - Browse showtimes by date and theater  
-✅ **Check Availability** - See available seats for each showtime  
+✅ **Check Availability** - See seat counts stored for each showtime
 
 ---
 
 ## 🗂️ Project Files Location
 
 ```
-bookmyshow-clone/
+Cineva/
 ├── backend/          ← Backend API (Node + MongoDB)
 │   ├── server.js     ← Main server file
 │   ├── seed.js       ← Sample data script
@@ -175,7 +175,7 @@ Press `Ctrl + C` in any terminal to stop the server
 After running `seed.js`, you'll have:
 - 5 Movies: Oppenheimer, Barbie, Jawan, Pathaan, Killers of the Flower Moon
 - 4 Theaters: PVR, INOX, Cinemax, Carnival
-- 10 Showtimes across different times and dates
+- 11 Showtimes across today and tomorrow; every movie has at least one
 
 ---
 
@@ -197,7 +197,7 @@ For detailed setup, advanced features, and deployment:
 
 ## 🎉 You're Ready!
 
-Your BookMyShow clone is now running. Enjoy! 🎬🍿
+Your Cineva app is now running. Enjoy! 🎬🍿
 
 **Next Steps:**
 - Explore the app
