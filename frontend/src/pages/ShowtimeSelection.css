@@ -1,231 +1,146 @@
-.showtime-selection-page {
-  padding: 40px 0;
-}
+.showtime-selection-page { min-height: calc(100vh - 76px); padding-block: 62px 90px; background: var(--color-canvas); }
 
-.showtime-selection-page h1 {
-  color: white;
-  font-size: 36px;
-  margin-bottom: 30px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Date Selector */
-.date-selector {
+.showtime-page-heading,
+.showtimes-section-heading {
   display: flex;
-  gap: 10px;
-  margin-bottom: 40px;
-  overflow-x: auto;
-  padding: 10px 0;
-  scroll-behavior: smooth;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
 }
+
+.showtime-page-heading { margin-bottom: 30px; }
+.showtime-page-heading h1 { margin: 0; font-size: clamp(2.25rem, 4.4vw, 3.4rem); letter-spacing: -0.065em; line-height: 1.05; }
+
+.showtime-movie-pill {
+  display: flex;
+  max-width: 40%;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  padding: 12px 16px;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  color: var(--color-ink-soft);
+  background: white;
+  font-size: 0.83rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.showtime-movie-pill span { flex: 0 0 auto; color: var(--color-muted); font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; }
+
+.date-picker-panel {
+  padding: 23px 24px 24px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: white;
+  box-shadow: var(--shadow-soft);
+}
+
+.date-picker-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
+.date-picker-heading h2 { margin: 0; font-size: 1rem; letter-spacing: -0.02em; }
+.date-picker-heading p { margin: 5px 0 0; color: var(--color-muted); font-size: 0.77rem; }
+
+.calendar-icon { position: relative; display: block; width: 27px; height: 25px; border: 1.7px solid #c3c5cd; border-radius: 6px; }
+.calendar-icon::before { position: absolute; top: 6px; right: 0; left: 0; border-top: 1.5px solid #c3c5cd; content: ''; }
+.calendar-icon::after { position: absolute; top: -4px; left: 6px; width: 12px; height: 6px; border-right: 2px solid #c3c5cd; border-left: 2px solid #c3c5cd; content: ''; }
+
+.date-selector { display: flex; gap: 9px; overflow-x: auto; padding: 3px 1px 8px; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: #d6d7de transparent; }
+.date-selector::-webkit-scrollbar { height: 5px; }
+.date-selector::-webkit-scrollbar-thumb { border-radius: 5px; background: #d6d7de; }
 
 .date-btn {
-  min-width: 80px;
-  padding: 12px;
-  background: white;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 12px;
-  text-align: center;
-  color: #333;
-  flex: 0 0 auto;
-}
-
-.date-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.showtime-selection-page .date-btn:not(.active) {
-  background: #fff;
-  color: #333;
-}
-
-.date-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-color: white;
-  color: white;
-}
-
-.date-day {
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.date-date {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 3px;
-}
-
-.date-month {
-  font-size: 11px;
-  opacity: 0.7;
-}
-
-/* Showtimes Section */
-.showtimes-section {
-  min-height: 400px;
-}
-
-.theaters-list {
   display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.theater-group {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.theater-header {
-  margin-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 15px;
-}
-
-.theater-header h2 {
-  font-size: 22px;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.theater-address {
-  color: #666;
-  font-size: 14px;
-}
-
-.shows-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 15px;
-}
-
-.showtime-card {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 10px;
-  padding: 15px;
-  display: flex;
+  min-width: 78px;
+  min-height: 82px;
+  flex: 1 0 78px;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  transition: all 0.3s;
-  border: 2px solid transparent;
-}
-
-.showtime-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  border-color: #667eea;
-}
-
-.show-time {
-  margin-bottom: 10px;
-}
-
-.time-display {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-}
-
-.show-details {
-  margin-bottom: 10px;
-}
-
-.show-details p {
-  margin: 3px 0;
-  color: #666;
-  font-size: 13px;
-}
-
-.language {
-  color: #667eea;
-  font-weight: 600;
-}
-
-.format {
-  color: #764ba2;
-}
-
-.show-pricing {
-  margin-bottom: 15px;
-}
-
-.price {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ff6b6b;
-  margin: 5px 0;
-}
-
-.available {
-  font-size: 12px;
-  color: #666;
-  margin: 5px 0;
-}
-
-.book-show-btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
+  justify-content: center;
+  padding: 9px 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 11px;
+  color: var(--color-ink-soft);
+  background: #fff;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s;
-  text-decoration: none;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms var(--ease-out), box-shadow 160ms ease;
 }
 
-.book-show-btn:hover:not([aria-disabled="true"]) {
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+.date-btn:hover { transform: translateY(-2px); border-color: #f5a2aa; }
+.date-btn.active { border-color: var(--color-accent); color: white; background: var(--color-accent); box-shadow: 0 8px 18px rgba(240, 68, 82, 0.2); }
+.date-btn:focus-visible { outline-offset: 2px; }
+.date-day { color: var(--color-muted); font-size: 0.67rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }
+.date-btn.active .date-day { color: rgba(255, 255, 255, 0.76); }
+.date-date { margin-top: 4px; font-size: 1.25rem; font-weight: 800; line-height: 1; }
+.date-month { margin-top: 4px; color: var(--color-muted); font-size: 0.67rem; }
+.date-btn.active .date-month { color: rgba(255, 255, 255, 0.76); }
+
+.showtimes-section { margin-top: 50px; }
+.showtimes-section-heading { align-items: end; margin-bottom: 19px; }
+.showtimes-section-heading h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.05em; }
+.screening-count { padding-bottom: 4px; color: var(--color-muted); font-size: 0.81rem; }
+
+.theaters-list { display: flex; flex-direction: column; gap: 17px; }
+.theater-group { padding: 23px 24px 24px; border: 1px solid var(--color-line); border-radius: var(--radius-md); background: white; box-shadow: 0 7px 22px rgba(22, 25, 39, 0.035); }
+.theater-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding-bottom: 16px; border-bottom: 1px solid var(--color-line); }
+.theater-heading-main { display: flex; min-width: 0; align-items: center; gap: 13px; }
+.theater-heading-main > div { min-width: 0; }
+.theater-icon { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border-radius: 12px; color: #bc2f3d; background: #fff0f1; font-size: 0.88rem; font-weight: 850; }
+.theater-header h3 { overflow: hidden; margin: 0; font-size: 1.04rem; letter-spacing: -0.025em; text-overflow: ellipsis; white-space: nowrap; }
+.theater-address { overflow: hidden; margin: 5px 0 0; color: var(--color-muted); font-size: 0.77rem; text-overflow: ellipsis; white-space: nowrap; }
+.theater-screening-count { flex: 0 0 auto; color: var(--color-muted); font-size: 0.73rem; }
+.theater-facilities { margin: 12px 0 0; color: var(--color-muted); font-size: 0.7rem; }
+
+.shows-container { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-top: 17px; }
+.showtime-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 18px; row-gap: 10px; padding: 16px 17px; border: 1px solid #e8e9ed; border-radius: 12px; background: #fcfcfd; transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease; }
+.showtime-card:hover { border-color: #f3a1a9; background: white; box-shadow: 0 8px 20px rgba(22, 25, 39, 0.055); }
+.showtime-card-top { display: flex; align-items: center; gap: 9px; }
+.time-display { color: var(--color-ink); font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
+.format-chip { padding: 4px 7px; border-radius: 5px; color: #666a76; background: #eeeff2; font-size: 0.61rem; font-weight: 750; }
+.show-details { display: flex; align-items: center; gap: 7px; }
+.show-details p { margin: 0; color: var(--color-ink-soft); font-size: 0.75rem; font-weight: 650; }
+.language-extra { color: var(--color-muted); font-size: 0.65rem; }
+.show-pricing { grid-column: 1; }
+.price { margin: 0; color: var(--color-ink); font-size: 1rem; font-weight: 800; letter-spacing: -0.035em; }
+.price > span { margin-right: 2px; color: var(--color-accent-dark); font-size: 0.82rem; }
+.price small { color: var(--color-muted); font-size: 0.65rem; font-weight: 500; letter-spacing: 0; }
+.available { margin: 4px 0 0; color: #507c67; font-size: 0.65rem; }
+.available.seats-limited { color: #ad6729; }
+
+.book-show-btn { display: inline-flex; min-width: 118px; min-height: 40px; grid-column: 2; grid-row: 1 / span 3; align-items: center; justify-content: center; gap: 8px; padding: 0 13px; border: 1px solid rgba(240, 68, 82, 0.2); border-radius: 9px; color: var(--color-accent-dark); background: var(--color-accent-soft); font-size: 0.75rem; font-weight: 750; text-decoration: none; transition: color 160ms ease, background 160ms ease, transform 160ms var(--ease-out); }
+.book-show-btn:hover:not([aria-disabled="true"]) { transform: translateY(-1px); color: white; background: var(--color-accent); }
+.book-show-btn > span { font-size: 1rem; }
+.book-show-btn[aria-disabled="true"] { border-color: var(--color-line); color: #8c8e97; background: #eff0f2; cursor: not-allowed; }
+
+.showtime-state { min-height: 200px; }
+.showtime-state h3 { font-size: 1.05rem; }
+.showtime-page-loading { min-height: 65vh; padding-block: 65px; }
+.showtime-page-loading .detail-loading-card { height: 430px; }
+.showtime-page-error { min-height: 70vh; padding-block: 70px; }
+.showtime-page-error .button-secondary { margin-top: -30px; }
+.screen-empty-icon { position: relative; display: block; width: 42px; height: 32px; margin-bottom: 16px; border: 2px solid #c5c7d0; border-radius: 7px; }
+.screen-empty-icon::before { position: absolute; right: 9px; bottom: -7px; left: 9px; height: 5px; border-bottom: 2px solid #c5c7d0; content: ''; }
+.screen-empty-icon::after { position: absolute; top: 8px; left: 16px; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 9px solid #c5c7d0; content: ''; }
+
+@media (max-width: 950px) {
+  .shows-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.book-show-btn[aria-disabled="true"] {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: #ccc;
+@media (max-width: 680px) {
+  .showtime-selection-page { padding-block: 43px 62px; }
+  .showtime-page-heading { align-items: start; flex-direction: column; gap: 17px; }
+  .showtime-movie-pill { max-width: 100%; }
+  .date-picker-panel { padding: 18px 17px 16px; }
+  .date-btn { min-width: 71px; flex-basis: 71px; }
+  .showtimes-section { margin-top: 39px; }
+  .theater-group { padding: 18px 15px; }
+  .shows-container { grid-template-columns: minmax(0, 1fr); gap: 9px; }
+  .showtime-card { padding: 14px; }
 }
 
-.no-shows,
-.loading {
-  text-align: center;
-  color: white;
-  font-size: 18px;
-  padding: 40px;
-}
-
-.error {
-  background: #ff6b6b;
-  color: white;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-  .showtime-selection-page h1 {
-    font-size: 24px;
-  }
-
-  .shows-container {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-
-  .date-selector {
-    gap: 8px;
-    padding: 10px 2px 14px;
-    margin-bottom: 28px;
-    -webkit-overflow-scrolling: touch;
-  }
+@media (max-width: 390px) {
+  .showtimes-section-heading { align-items: start; flex-direction: column; gap: 9px; }
+  .theater-icon { width: 37px; height: 37px; flex-basis: 37px; }
+  .book-show-btn { min-width: 101px; }
 }
