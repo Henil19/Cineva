@@ -16,17 +16,29 @@ function BookingPlaceholder() {
 
   return (
     <main className="booking-page container">
-      <section className="booking-card">
-        <h1>Seat selection</h1>
-        {error ? <p className="booking-error">{error}</p> : !showtime ? <p>Loading showtime...</p> : (
-          <>
-            <p className="booking-movie">{showtime.movieId?.title || 'Movie'}</p>
-            <p>{showtime.theaterId?.name} · {showtime.theaterId?.city}</p>
-            <p>{new Date(showtime.date).toLocaleDateString()} · {showtime.time}</p>
-            <p className="booking-notice">Seat selection and booking are not available yet. No booking has been made.</p>
-          </>
-        )}
-        <Link className="booking-back" to={showtime ? `/showtimes/${showtime.movieId?._id}` : '/'}>Back to showtimes</Link>
+      <section className="booking-shell">
+        <span className="booking-eyebrow">Your movie night</span>
+        <h1 className="booking-heading">Seat selection</h1>
+        <div className="booking-card">
+          <div className="booking-summary">
+            {error ? <p className="booking-error" role="alert">{error}</p> : !showtime ? <p aria-live="polite">Loading screening details…</p> : (
+              <>
+                <p className="booking-movie">{showtime.movieId?.title || 'Movie'}</p>
+                <p className="booking-theater">{showtime.theaterId?.name}{showtime.theaterId?.city ? ` · ${showtime.theaterId.city}` : ''}</p>
+                <div className="booking-details">
+                  <div><span className="booking-detail-label">Date</span>{new Date(showtime.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+                  <div><span className="booking-detail-label">Showtime</span>{showtime.time}</div>
+                </div>
+                <p className="booking-notice">Seat selection is being prepared. You have not selected seats and no booking has been made.</p>
+              </>
+            )}
+            <Link className="booking-back" to={showtime ? `/showtimes/${showtime.movieId?._id}` : '/'}>← Back to showtimes</Link>
+          </div>
+          <aside className="booking-art" aria-label="Seat selection preview">
+            <div className="seat-illustration" aria-hidden="true">{Array.from({ length: 12 }, (_, index) => <span key={index} />)}</div>
+            <p><strong>Pick your perfect spot</strong>Choose a screening first. Interactive seat selection is coming soon.</p>
+          </aside>
+        </div>
       </section>
     </main>
   );
