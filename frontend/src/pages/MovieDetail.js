@@ -27,69 +27,60 @@ function MovieDetail() {
     fetchMovieDetails();
   }, [fetchMovieDetails]);
 
-  if (loading) return <div className="container"><p>Loading...</p></div>;
-  if (error) return <div className="container"><p className="error">{error}</p></div>;
-  if (!movie) return <div className="container"><p>Movie not found</p></div>;
+  if (loading) return <main className="detail-loading"><div className="container"><div className="detail-loading-card" aria-label="Loading movie details" /></div></main>;
+  if (error) return <main className="detail-loading container"><div className="state-panel" role="alert"><div><h2>Movie details unavailable</h2><p>{error}</p></div></div></main>;
+  if (!movie) return <main className="detail-loading container"><div className="state-panel"><h2>Movie not found</h2></div></main>;
 
   const releaseDate = new Date(movie.releaseDate);
 
   return (
-    <div className="movie-detail-page">
-      <div className="container">
-        <div className="movie-detail-container">
-          <div className="movie-poster-section">
-            <MoviePoster src={movie.posterUrl} title={movie.title} className="detail-poster" loading="eager" />
-          </div>
-
-          <div className="movie-details-section">
-            <h1>{movie.title}</h1>
-
-            <div className="detail-info">
-              <div className="info-item">
-                <span className="label">Genre:</span>
-                <span>{movie.genre.join(', ')}</span>
+    <main className="movie-detail-page">
+      <div className="detail-stage">
+        <div className="container detail-content">
+          <Link className="detail-back-link" to="/">← <span>All movies</span></Link>
+          <section className="movie-detail-container" aria-labelledby="movie-title">
+            <div className="movie-poster-section">
+              <div className="poster-frame">
+                <MoviePoster src={movie.posterUrl} title={movie.title} className="detail-poster" loading="eager" />
+                <span className="poster-frame-label">CINEVA · FEATURE</span>
               </div>
-
-              <div className="info-item">
-                <span className="label">Language:</span>
-                <span>{movie.language.join(', ')}</span>
-              </div>
-
-              <div className="info-item">
-                <span className="label">Duration:</span>
-                <span>⏱️ {movie.duration} minutes</span>
-              </div>
-
-              <div className="info-item">
-                <span className="label">Release Date:</span>
-                <span>{releaseDate.toLocaleDateString()}</span>
-              </div>
-
-              {movie.rating > 0 && (
-                <div className="info-item">
-                  <span className="label">Rating:</span>
-                  <span className="rating">⭐ {movie.rating.toFixed(1)}/10</span>
-                </div>
-              )}
             </div>
 
-            {movie.description && (
-              <div className="description-section">
-                <h3>Synopsis</h3>
-                <p>{movie.description}</p>
+            <div className="movie-details-section">
+              <span className="detail-eyebrow">THE FEATURE PRESENTATION</span>
+              <h1 id="movie-title">{movie.title}</h1>
+              <div className="detail-genre-list" aria-label="Genres">
+                {movie.genre.map((genre) => <span key={genre}>{genre}</span>)}
               </div>
-            )}
 
-            <Link
-              className="book-button"
-              to={`/showtimes/${id}`}
-            >
-              Book Tickets Now
-            </Link>
-          </div>
+              <div className="detail-highlights">
+                {movie.rating > 0 && <div className="detail-rating"><span aria-hidden="true">★</span><strong>{movie.rating.toFixed(1)}</strong><small>/ 10</small></div>}
+                <span>{movie.duration} min</span>
+                <span>{releaseDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </div>
+
+              {movie.description && (
+                <div className="description-section">
+                  <h2>About the film</h2>
+                  <p>{movie.description}</p>
+                </div>
+              )}
+
+              <div className="detail-languages">
+                <span className="detail-label">Available languages</span>
+                <div>{movie.language.map((language) => <span className="language-chip" key={language}>{language}</span>)}</div>
+              </div>
+
+              <Link className="book-button" to={`/showtimes/${id}`}>
+                Find showtimes <span aria-hidden="true">→</span>
+              </Link>
+              <p className="detail-cta-note">Choose a theater and screening that works for you.</p>
+            </div>
+          </section>
         </div>
       </div>
-    </div>
+      <div className="detail-footer-space" aria-hidden="true" />
+    </main>
   );
 }
 
