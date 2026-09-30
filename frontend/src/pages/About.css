@@ -1,0 +1,6 @@
+.about-page { padding-top: 40px; padding-bottom: 40px; }
+.about-card { max-width: 850px; margin: 0 auto; padding: 36px; background: white; border-radius: 15px; box-shadow: 0 8px 30px rgba(0, 0, 0, .18); color: #444; line-height: 1.7; }
+.about-card h1 { color: #333; margin-bottom: 16px; }
+.about-card h2 { color: #667eea; margin: 24px 0 8px; }
+.about-card ul { padding-left: 24px; }
+@media (max-width: 600px) { .about-card { padding: 24px; } }
