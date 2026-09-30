@@ -1,0 +1,7 @@
+.booking-page { padding-top: 40px; padding-bottom: 40px; }
+.booking-card { max-width: 650px; margin: 0 auto; padding: 32px; border-radius: 15px; background: #fff; color: #444; line-height: 1.7; box-shadow: 0 8px 30px rgba(0, 0, 0, .18); }
+.booking-card h1 { color: #333; margin-bottom: 16px; }
+.booking-movie { font-size: 20px; font-weight: 700; }
+.booking-notice { margin: 24px 0; padding: 14px; border-radius: 8px; background: #fff4d6; color: #634b13; }
+.booking-error { color: #b42318; margin-bottom: 16px; }
+.booking-back { display: inline-block; color: #5b55c8; font-weight: 600; }
